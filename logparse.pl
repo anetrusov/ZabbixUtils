@@ -11,7 +11,7 @@ use FindBin               ();
 use Digest::MD5           ();
 use File::Spec::Functions ();
 
-Carp::confess "Usage: ${PROGRAM_NAME} {file} {mask} {match} {except}"
+Carp::confess "Usage: ${PROGRAM_NAME} <file> <mask> <match> [<except>]"
     if !@ARGV || scalar @ARGV < 3;
 
 my $argv = {};
