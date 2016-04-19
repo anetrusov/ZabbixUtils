@@ -4,6 +4,8 @@
 ###################################################################################
 use strict;
 use warnings;
+use utf8;
+
 use English qw(-no_match_vars);
 use Carp ();
 
@@ -32,20 +34,24 @@ seek $fh, readpos($file), 0;
 my $entry = {};
 
 while (<$fh>) {
-    if ( m/$argv->{mask}/xms || eof $fh ) {
-        $entry->{final} = delete $entry->{temp};
+    undef $entry->{final};
+
+    if (m/$argv->{mask}/xms) {
+        $entry->{final} = $entry->{temp};
         $entry->{temp}  = $_;
     }
     else {
-        $entry->{temp} .= $_ if $multiline;
+        $multiline ? $entry->{temp} .= $_ : undef $entry->{temp};
     }
 
-    if ( $entry->{final} && $entry->{final} =~ m/$argv->{match}/xms ) {
-        next
-          if $argv->{except}
-          && $entry->{final} =~ m/$argv->{except}/xms;
+    for ( eof $fh ? ( 'final', 'temp' ) : 'final' ) {
+        if ( $entry->{$_} && $entry->{$_} =~ m/$argv->{match}/xms ) {
+            next
+              if $argv->{except}
+              && $entry->{$_} =~ m/$argv->{except}/xms;
 
-        print delete $entry->{final}, $/;
+            print $entry->{$_};
+        }
     }
 }
 
