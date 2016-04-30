@@ -53,12 +53,13 @@ with open(argv['file'], 'r') as f:
 
         entry['final'] = None
 
-        if argv['mask'].search(line):
-            entry['final'] = entry['temp']
-            entry['temp'] = line
-        else:
-            if multiline:
-                entry['temp'] += line
+        if line:
+            if argv['mask'].search(line):
+                entry['final'] = entry['temp']
+                entry['temp'] = line
+            else:
+                if multiline:
+                    entry['temp'] += line
 
         for _entry in ['final'] if line else ['final', 'temp']:
             if entry[_entry]:
@@ -67,6 +68,7 @@ with open(argv['file'], 'r') as f:
                         pass
                     else:
                         print(entry[_entry])
+
         if not line:
             break
 
