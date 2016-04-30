@@ -41,7 +41,7 @@ while (<$fh>) {
         $entry->{temp}  = $_;
     }
     else {
-        $multiline ? $entry->{temp} .= $_ : undef $entry->{temp};
+        $multiline && ($entry->{temp} .= $_);
     }
 
     for ( eof $fh ? ( 'final', 'temp' ) : 'final' ) {
